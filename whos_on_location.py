@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 __author__ = 'facetoe'
 import requests
 from bs4 import BeautifulSoup
@@ -37,3 +39,25 @@ class WhosOnLocation():
     def __change_status(self, status):
         r = self.session.post('https://au.whosonlocation.com/ajax/changestatus', data={'status': status})
         return r.json()
+
+    # _type can be org or location
+    def search(self, keyword, _type='location'):
+        payload = {'keyword': keyword, 'type': _type}
+        r = self.session.get('https://au.whosonlocation.com/home/search', params=payload)
+        return self.__parse_results(BeautifulSoup(r.content))
+
+    @staticmethod
+    def __parse_results(page):
+        titles = ['Name', 'Title', 'Department', 'Current Location', 'Home Location']
+        table = page.body.find_all("tr", {"class": "dataRow"})
+        results = []
+        for row in table:
+            values = [v.string for v in row.findAll('td', {'class': 'truncate'})]
+            results.append(OrderedDict(zip(titles, values)))
+        return results
+
+
+
+
+
+
