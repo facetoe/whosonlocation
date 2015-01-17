@@ -77,6 +77,10 @@ arg_group.add_argument('--search',
 
 args = parser.parse_args()
 
+if len(sys.argv) == 1:
+    parser.print_help()
+    sys.exit()
+
 location = init_location()
 if not location.login():
     print('Login failed')
