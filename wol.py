@@ -22,10 +22,14 @@ def set_credentials():
     if password != password_verify:
         print("Passwords don't match!")
     else:
-        user = getpass.getuser()
-        keyring.set_password(EMAIL_KEY, user, email)
-        keyring.set_password(PASS_KEY, user, password)
-        print("Credentials set!")
+        location = WhosOnLocation(email, password)
+        if location.login():
+            user = getpass.getuser()
+            keyring.set_password(EMAIL_KEY, user, email)
+            keyring.set_password(PASS_KEY, user, password)
+            print("Credentials set!")
+        else:
+            print("The entered credentials are invalid - nothing saved.")
 
 
 def init_location():
@@ -81,18 +85,21 @@ if len(sys.argv) == 1:
     parser.print_help()
     sys.exit()
 
+if args.set_creds:
+    set_credentials()
+    sys.exit(0)
+
 location = init_location()
 if not location.login():
     print('Login failed')
+    sys.exit(1)
+
+if args.status:
+    set_status(location, args.status)
+elif args.search:
+    search(location, args.search)
+elif args.get_status:
+    print("Your status is: %s" % location.get_status())
 else:
-    if args.set_creds:
-        set_credentials()
-    elif args.status:
-        set_status(location, args.status)
-    elif args.search:
-        search(location, args.search)
-    elif args.get_status:
-        print("Your status is: %s" % location.get_status())
-    else:
-        print("WTF")
+    print("WTF")
 
