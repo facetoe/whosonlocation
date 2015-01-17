@@ -1,7 +1,6 @@
-from collections import OrderedDict
-
 __author__ = 'facetoe'
 import requests
+from collections import OrderedDict
 from bs4 import BeautifulSoup
 
 

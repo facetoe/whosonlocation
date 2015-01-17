@@ -65,6 +65,11 @@ arg_group.add_argument('--set-status',
 arg_group.add_argument('--set-creds',
                        action='store_true',
                        help='Set email/password for whosonlocation.com')
+
+arg_group.add_argument('--get-status',
+                       action='store_true',
+                       help='Get your current status')
+
 arg_group.add_argument('--search',
                        metavar='QUERY',
                        type=str,
@@ -82,6 +87,8 @@ else:
         set_status(location, args.status)
     elif args.search:
         search(location, args.search)
+    elif args.get_status:
+        print("Your status is: %s" % location.get_status())
     else:
         print("WTF")
 
